@@ -35,6 +35,8 @@ public class TodoApiTests
         var response = await client.GetAsync("/todos");
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+        Assert.Empty(db.Todos);
     }
 
     [Fact]
