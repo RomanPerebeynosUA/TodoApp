@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.DataProtection;
 
 namespace TodoApi.Tests;
@@ -156,6 +156,13 @@ public class UserApiTests
         var response = await client.PostAsJsonAsync("/users/login", new UserInfo { Email = "todouser", Password = "prd1" });
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync();
+        Assert.DoesNotContain("accessToken", body);
+
+        var user = db.Users.Single();
+        Assert.Equal("todouser", user.UserName);
+        Assert.Empty(db.UserTokens.ToList());
     }
 
     class AuthToken
